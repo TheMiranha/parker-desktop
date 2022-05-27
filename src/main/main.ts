@@ -48,7 +48,9 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
 })
 autoUpdater.on('update-downloaded', (ev, info) => {
   sendStatusToWindow('Atualização baixada; Instalando em 5 segundos...');
-  autoUpdater.quitAndInstall();
+  setTimeout(() => {
+    autoUpdater.quitAndInstall();
+  }, 5000);
 });
 
 let mainWindow: BrowserWindow | null = null;

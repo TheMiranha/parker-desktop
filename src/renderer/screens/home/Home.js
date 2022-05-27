@@ -28,7 +28,8 @@ const Home = (props) => {
             })
             if (pls.length > 0)
             {
-                setTerminal(pls[0].package.name);
+                setTerminal(pls[pls.length-1].package.name);
+                // setTerminal(pls[0].package.name);
             }
           })
           window.electron.ipcRenderer.sendMessage('getPlugins', {});

@@ -32,6 +32,7 @@ const Item = ({plugin, removePlugin, inStore, download}) => {
         <img
           src={'https://github.com/TheMiranha/'+plugin.folder+'/blob/main/icon.png?raw=true'}
           alt='Movie'
+          style={{ width: 250, height: 250, marginLeft: 10 }}
         />
       </figure>
       <div className='card-body'>

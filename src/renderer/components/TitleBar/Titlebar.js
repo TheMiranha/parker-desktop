@@ -27,7 +27,7 @@ const Titlebar = props => {
           <a href='#my-modal'>Servidores</a>
         </div>
       </div>
-      <div className='title'>Parker Desktop</div>
+      <div className='title'>Parker</div>
       <div className='defaultButtons'>
         <div onClick={() => {window.electron.ipcRenderer.sendMessage('titlebar', 'minimize')}} className='miniButton cursor'>
           <HorizontalRuleIcon sx={{ color: '#965F20', fontSize: 12 }} />

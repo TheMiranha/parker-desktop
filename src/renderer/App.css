@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--p)) hsl(var(--n));
+  }
+
+  *::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: hsl(var(--n));
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--p));
+    border-radius: 35px;
+    border: 0px solid #ffffff;
+  }

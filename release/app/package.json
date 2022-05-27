@@ -1,0 +1,22 @@
+{
+  "name": "parker-desktop",
+  "version": "0.0.2",
+  "description": "Parker versão Desktop",
+  "main": "./dist/main/main.js",
+  "author": {
+    "name": "Lucas Miranda dos Santos",
+    "email": "lucas.miranda.strapasson@gmail.com",
+    "url": "https://themiranha.github.io/lucas-portfolio/"
+  },
+  "scripts": {
+    "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
+    "postinstall": "npm run electron-rebuild && npm run link-modules"
+  },
+  "dependencies": {
+    "download-git-repo": "^3.0.2",
+    "puppeteer": "^14.1.0",
+    "require-with-global": "^2.0.1"
+  },
+  "license": "MIT"
+}

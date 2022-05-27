@@ -12,15 +12,6 @@ const initialServers = {
     memory: '0/0',
     last_restart: 'never'
   },
-  ia: {
-    container: 'Offline'
-  },
-  // r6stats: {
-  //   container: 'Offline'
-  // },
-  weather: {
-    container: 'Offline'
-  }
 }
 
 const Serversmodal = (props) => {
@@ -49,14 +40,6 @@ const Serversmodal = (props) => {
   const getServersInfo = async() => {
     setServers(initialServers);
     var discloudStatus = await Discloud.appInfo()
-    // var r6Status = await R6stats.getServerStatus();
-    var weatherStatus = await Temperature.getServerStatus();
-    setServers({
-      discord: discloudStatus,
-      ia: { container: 'Online' },
-      // r6stats: {container: r6Status ? 'Online' : 'Offline'},
-      weather: {container: weatherStatus ? 'Online' : 'Offline'}
-    })
   }
 
   return (
@@ -78,10 +61,6 @@ const Serversmodal = (props) => {
           />
           Servidores
         </div>
-
-        <DefaultStatus name='IA' container={servers.ia.container} />
-        {/* <DefaultStatus name='R6' container={servers.r6stats.container} /> */}
-        <DefaultStatus name="Weather" container={servers.weather.container}/>
 
         <div
           tabIndex='0'

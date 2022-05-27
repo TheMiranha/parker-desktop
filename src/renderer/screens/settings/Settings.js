@@ -109,20 +109,6 @@ const Settings = props => {
               )}
             </select>
           </div>
-          <div className='divider' style={{ fontSize: 30 }}>
-            Temperatura
-          </div>
-          <div>
-            Cidade:
-            <input
-              style={{ marginLeft: 10 }}
-              value={config.weather.city == false ? '' : config.weather.city}
-              onChange={(e) => setConfig({...config, weather: {...config.weather, city: e.target.value}})}
-              type='text'
-              placeholder='Digite sua cidade'
-              className='input input-bordered w-full max-w-xs'
-            />
-          </div>
           <button className="btn btn-outline btn-success" onClick={saveConfig} style={{marginTop: 20}}>Salvar</button>
           {plugins.map(pl => {
             if (pl.RENDER_CONFIG)

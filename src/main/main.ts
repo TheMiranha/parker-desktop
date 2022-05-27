@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Notification } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -22,32 +22,29 @@ export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
   }
 }
 
-function sendStatusToWindow(text) {
-  log.info(text);
-  mainWindow?.webContents.send('Update', text);
-}
+const UPDATE_NOTIFICATION_TITLE = 'Parker';
 
 autoUpdater.on('checking-for-update', () => {
-  sendStatusToWindow('Verificando atualizações...');
+  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Verificando atualizações' }).show()
 })
 autoUpdater.on('update-available', (ev, info) => {
-  sendStatusToWindow('Atualização disponível.');
+  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Atualização disponível.' }).show()
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-  sendStatusToWindow('Nenhuma atualização disponível.');
+  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Nenhuma atualização disponível.' }).show()
 })
 autoUpdater.on('error', (ev, err) => {
-  sendStatusToWindow('Erro ao tentar atualizar.');
+  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Erro ao tentar atualizar.' }).show()
 })
 autoUpdater.on('download-progress', (ev, progressObj) => {
-  sendStatusToWindow('Baixando atualização...');
+  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Baixando atualização...' }).show()
 })
 autoUpdater.on('update-downloaded', (ev, info) => {
-  sendStatusToWindow('Atualização baixada; Instalando em 5 segundos...');
+  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Atualização baixada; Instalando em 5 segundos...' }).show()
   setTimeout(() => {
     autoUpdater.quitAndInstall();
   }, 5000);
@@ -252,6 +249,7 @@ const createWindow = async () => {
       mainWindow.show();
       console.log(mainWindow);
     }
+    autoUpdater.checkForUpdatesAndNotify();
   });
 
   mainWindow.on('closed', () => {

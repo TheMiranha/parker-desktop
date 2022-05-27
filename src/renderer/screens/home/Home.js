@@ -2,7 +2,6 @@ import { AlternateEmail } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import Titlebar from '../../components/TitleBar/Titlebar'
 import Sidebar from './components/Sidebar';
-import Temperature from './terminals/Temperature'
 
 function rInverted(s) {
     var x = s;
@@ -14,7 +13,7 @@ function rInverted(s) {
 
 const Home = (props) => {
 
-    const [terminal, setTerminal] = useState('temperature')
+    const [terminal, setTerminal] = useState('');
     const [plugins, setPlugins] = useState([]);
 
     useEffect(() => {
@@ -27,6 +26,10 @@ const Home = (props) => {
                     pluginsToSet.push(plugin);
                 setPlugins(pluginsToSet);
             })
+            if (pls.length > 0)
+            {
+                setTerminal(pls[0].package.name);
+            }
           })
           window.electron.ipcRenderer.sendMessage('getPlugins', {});
     },[])
@@ -38,7 +41,12 @@ const Home = (props) => {
                 ToRender = plugins[i].terminal.render;
             }
         }
-        return <ToRender/>;
+        if (ToRender == false)
+        {
+            return false;
+        } else {
+            return <ToRender/>;
+        }
     }
 
     return (
@@ -47,7 +55,6 @@ const Home = (props) => {
             <div style={{display: 'flex'}}>
                 <Sidebar id="home_sidebar" plugins={plugins} terminal={terminal} setTerminal={setTerminal}/>
                 {
-                    terminal == 'temperature' ? <Temperature/> : 
                     checkTerminals()
                 }
             </div>

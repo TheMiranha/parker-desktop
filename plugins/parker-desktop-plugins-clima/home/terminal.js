@@ -1,24 +1,26 @@
 import { windowsStore } from 'process'
 import { useEffect, useState } from 'react'
-import TemperatureAPI from '../../../apis/temperature/Temperature'
+import TemperatureAPI from '../temperature/Temperature'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import StarIcon from '@mui/icons-material/Star'
+import Config from '../config/config.js';
+import { FormControlUnstyledContext } from '@mui/base'
 
-const Temperature = props => {
+const render = props => {
   const [config, setConfig] = useState({})
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({})
 
   useEffect(() => {
-    window.electron.ipcRenderer.once('getConfig', async a => {
-      setConfig(a.weather)
-      if (a.weather.city != false && a.weather.city.length > 0) {
-        await loadData(a.weather.city, true)
+    Config.getConfig(async (c) => {
+      setConfig(c);
+      if (c.city != false && c.city.length > 0) {
+        await loadData(c.city, true);
+      } else {
+        setLoading(false);
       }
-      setLoading(false)
     })
-    window.electron.ipcRenderer.sendMessage('getConfig', {})
   }, [])
 
   const loadData = async (city, self) => {
@@ -27,12 +29,11 @@ const Temperature = props => {
       var toSet = { ...config }
       toSet.city = false
       setConfig(toSet)
-      window.electron.ipcRenderer.sendMessage('appendConfig', {
-        weather: toSet
-      })
+      Config.appendConfig(toSet);
       setError('Cidade não encontrada!')
     } else {
       setData(data2)
+      setLoading(false);
     }
   }
 
@@ -44,14 +45,12 @@ const Temperature = props => {
       var toSet = { ...config }
       toSet.city = false
       setConfig(toSet)
-      window.electron.ipcRenderer.sendMessage('appendConfig', {
-        weather: toSet
-      })
+      Config.appendConfig(toSet);
       setError('Cidade não encontrada!')
     } else {
       setData(data2)
       setConfig(toSet);
-      window.electron.ipcRenderer.sendMessage('appendConfig', { weather: toSet })
+      Config.appendConfig(toSet);
     }
   }
 
@@ -329,4 +328,4 @@ const Modal = ({ data }) => {
   )
 }
 
-export default Temperature
+export default { render }

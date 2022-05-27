@@ -1,6 +1,3 @@
-import { ImportContactsTwoTone, WindPower } from '@mui/icons-material'
-import WbSunnyIcon from '@mui/icons-material/WbSunny'
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { useEffect, useState } from 'react';
 
 const Sidebar = props => {
@@ -14,7 +11,6 @@ const Sidebar = props => {
         width: 150
       }}
     >
-      <Item setTerminal={props.setTerminal} terminal={props.terminal} title="Temperatura" icon={<WbSunnyIcon style={{marginRight: 10}}/>} term="temperature" />
       {props.plugins.map(plugin => 
         <Item key={plugin.package.name + '-' + plugin.package.version} setTerminal={props.setTerminal} terminal={props.terminal} title={plugin.sidebar.Item().title} icon={plugin.sidebar.Item().icon} term={plugin.package.name}/>
       )}

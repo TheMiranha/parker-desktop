@@ -1,7 +1,7 @@
 {
   "name": "parker-desktop",
-  "version": "0.0.4",
-  "description": "Parker",
+  "version": "0.0.5",
+  "description": "Parker Desktop",
   "main": "./dist/main/main.js",
   "author": {
     "name": "Lucas Miranda dos Santos",

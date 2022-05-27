@@ -102,7 +102,6 @@ async function getPlugins() {
 }
 
 async function downloadPlugin(repo, callBack) {
-  console.log('Repo: ' + repo);
   GithubDownloader('github:' + repo, getAssetPath('/plugins/' + repo.split('/')[1]), (err) => {
     callBack();
   })
@@ -118,7 +117,6 @@ ipcMain.on('getAssetsPath', async(event, arg) => {
 
 ipcMain.on('downloadPlugin', async(event, arg) => {
   var {repo} = arg;
-  console.log(app.getPath('userData'));
   downloadPlugin(repo, () => {
     event.reply('downloadPlugin', 'done');
   });
@@ -247,7 +245,6 @@ const createWindow = async () => {
       mainWindow.minimize();
     } else {
       mainWindow.show();
-      console.log(mainWindow);
     }
     autoUpdater.checkForUpdatesAndNotify();
   });

@@ -10,10 +10,12 @@ const Instalados = props => {
       <p style={{ textAlign: 'center', fontSize: 25, marginTop: 25 }}>
         Pacotes instalados
       </p>
+      <div style={{overflowY: 'scroll',scrollBehavior: 'smooth', height: 'calc(100vh - 125px)', backgroundColor: 'hsl(var(--b2))',}}>
       <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         {props.plugins.map((plugin, index) => (
-          <Item download={props.download} inStore={props.store.filter(x => x.repo.split('/')[1] == plugin.folder)[0]} removePlugin={props.removePlugin} key={plugin} plugin={plugin}/>
+          <Item key={plugin.folder} download={props.download} inStore={props.store.filter(x => x.repo.split('/')[1] == plugin.folder)[0]} removePlugin={props.removePlugin} plugin={plugin}/>
         ))}
+      </div>
       </div>
     </div>
   )

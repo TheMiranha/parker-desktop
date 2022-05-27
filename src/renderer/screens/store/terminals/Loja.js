@@ -23,7 +23,7 @@ const Instalados = props => {
       >
         {props.store.map((plugin, index) => 
         {
-          return props.plugins.filter(x => x.folder == plugin.repo.split('/')[1]).length == 0 ? <Item key={plugin.repo} download={props.download} plugin={plugin}/> : <></>
+          return props.plugins.filter(x => x.folder == plugin.repo.split('/')[1]).length == 0 ? <Item key={`${index}`} download={props.download} plugin={plugin}/> : false
         }
         )}
         </div>
@@ -38,7 +38,7 @@ const Item = ({plugin, download}) => {
     <div className='card card-side bg-base-100 shadow-xl' style={{width: 600, marginTop: 25}}>
       <figure>
         <img
-          src={'https://github.com/'+plugin.repo+'/blob/main/icon.png?raw=true'}
+          src={'https://github.com/'+plugin.repo+'/blob/main/icon.png?raw=true&time=5456748'}
           alt='Movie'
           style={{ width: 250, height: 250, marginLeft: 10 }}
         />

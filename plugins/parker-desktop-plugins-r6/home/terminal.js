@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import { setFlagsFromString } from 'v8'
 import R6stats from '../r6stats/R6stats'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import StarIcon from '@mui/icons-material/Star'
-import { DataArray } from '@mui/icons-material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Config from '../config/config.js';
 

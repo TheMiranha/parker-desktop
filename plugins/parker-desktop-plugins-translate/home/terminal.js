@@ -3,15 +3,15 @@ import Translate from '../Translate'
 
 const render = () => {
   const [loading, setLoading] = useState(false)
-    const [text, setText] = useState('')
-    const [lang, setLang] = useState('pt')
+  const [text, setText] = useState('')
+  const [lang, setLang] = useState('pt')
 
-  traduzir = async() => {
-    setLoading(true);
-    var res = await Translate.translate(text, lang);
-    setText(res);
-    setLoading(false);
-  }
+  const traduzir = async () => {
+      setLoading(true)
+      var res = await Translate.translate(text, lang)
+      setText(res)
+      setLoading(false)
+    }
 
   return (
     <div
@@ -25,8 +25,7 @@ const render = () => {
         justifyContent: 'center'
       }}
     >
-      {loading ? (
-        <div
+      {loading ? <div
           style={{
             height: '100%',
             width: '100%',
@@ -36,16 +35,20 @@ const render = () => {
           }}
         >
           <progress className='progress progress-primary w-56'></progress>
-        </div>
-      ) : (
-        <Welcome lang={lang} setLang={setLang} text={text} setText={setText} traduzir={traduzir}/>
-      )}
+        </div> : 
+      <Welcome
+        lang={lang}
+        setLang={setLang}
+        text={text}
+        setText={setText}
+        traduzir={traduzir}
+      />}
     </div>
   )
 }
 
 const Welcome = ({traduzir, text, setText, lang, setLang}) => {
-  const [langs, setLangs] = useState([])
+  const [langs, setLangs] = useState([{code: 'pt', name: 'Portuguese'}])
 
   useEffect(() => {
     var init = async () => {

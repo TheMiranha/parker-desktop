@@ -50,7 +50,6 @@ const Settings = props => {
       var toSet = [];
         pls.forEach(async(pl) => {
           var functions = (await import('../../../../plugins/' +pl.folder+ '/config/config')).default;
-          console.log('PL: ' + pl);
           if (functions.RENDER_CONFIG) {
             var plugin = {package: pl.package, ...functions};
             toSet.push(plugin);

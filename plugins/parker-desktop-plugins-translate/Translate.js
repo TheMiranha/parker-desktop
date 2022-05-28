@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ENDPOINT = 'https://parker-translate.herokuapp.com/';
+const ENDPOINT = 'https://parker-servers-translate.herokuapp.com/';
 
 const getLangs = async() => {
     var response = await axios.get(ENDPOINT + 'langs');

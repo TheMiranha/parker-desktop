@@ -129,7 +129,7 @@ ipcMain.on('removePlugin', async(event, arg) => {
 })
 
 ipcMain.on('getStore', async(event, arg) => {
-  var response = await axios.get('https://parker-plugins.herokuapp.com/plugins');
+  var response = await axios.get('https://parker-servers-plugins.herokuapp.com/plugins');
   event.reply('getStore', {plugins: response.data});
 })
 
@@ -149,7 +149,7 @@ ipcMain.on('setPluginConfig', async(event, arg) => {
 ipcMain.on('getPluginConfig', async (event, arg) => {
   var {plugin} = arg;
   var config = await getPluginConfig(plugin);
-  event.reply('getPluginConfig', config);
+  event.reply(plugin + '-config', {config, plugin});
 })
 
 ipcMain.on('getPlugins', async(event, arg) => {

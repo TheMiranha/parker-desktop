@@ -18,6 +18,8 @@ import fs from 'fs';
 import axios from 'axios';
 import GithubDownloader from 'download-git-repo';
 
+const { session } = require('electron')
+
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -246,6 +248,7 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+    
     autoUpdater.checkForUpdatesAndNotify();
   });
 

@@ -1,6 +1,6 @@
 {
   "name": "parker-desktop",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Parker Desktop",
   "main": "./dist/main/main.js",
   "author": {

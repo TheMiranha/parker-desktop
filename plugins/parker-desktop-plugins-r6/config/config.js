@@ -1,0 +1,58 @@
+import { Repeat } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+
+const setConfig = (config) => {
+    window.electron.ipcRenderer.sendMessage('setPluginConfig', {plugin: 'parker-desktop-plugins-r6', config});
+}
+
+const appendConfig = (config) => {
+    window.electron.ipcRenderer.sendMessage('appendPluginConfig', {plugin: 'parker-desktop-plugins-r6', toSet: config});
+}
+
+const getConfig = (callBack) => {
+    const execOnce = () => {
+        window.electron.ipcRenderer.once('parker-desktop-plugins-r6-config', config => {
+                callBack(config.config);
+        });
+    }
+    execOnce();
+    window.electron.ipcRenderer.sendMessage('getPluginConfig', {plugin: 'parker-desktop-plugins-r6'});
+}
+
+const RENDER_CONFIG = true;
+const RENDER_TITLE = 'Rainbow Six';
+
+const render = () => {
+
+    const [nickName, setNickName] = useState('');
+
+    useEffect(() => {
+        getConfig(config => {
+            setNickName(config.nickname);
+        })
+    }, [])
+
+    const saveConfig = () => {
+        appendConfig({nickname: nickName});
+    }
+
+    return (
+        <div>
+            <div>
+            Nickname:
+            <input
+              style={{ marginLeft: 10 }}
+              value={nickName == false ? '' : nickName}
+              onChange={(e) => setNickName(e.target.value)}
+              type='text'
+              placeholder='Digite um nickname...'
+              className='input input-bordered w-full max-w-xs'
+            />
+          </div>
+          <button className="btn btn-outline btn-success" onClick={saveConfig} style={{marginTop: 20}}>Salvar</button>
+        </div>
+    )
+}
+
+
+export default { setConfig, appendConfig, getConfig, render, RENDER_CONFIG, RENDER_TITLE }

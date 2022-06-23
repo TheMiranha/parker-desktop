@@ -48,8 +48,8 @@ const Settings = props => {
 
     window.electron.ipcRenderer.once('getPlugins', pls => {
       var toSet = [];
-        pls.forEach(async(pl) => {
-          var functions = (await import('../../../../plugins/' +pl.folder+ '/config/config')).default;
+      pls.forEach(async(pl) => {
+        var functions = (await import('../../../../plugins/' +pl.folder+ '/config/config')).default;
           if (functions.RENDER_CONFIG) {
             var plugin = {package: pl.package, ...functions};
             toSet.push(plugin);

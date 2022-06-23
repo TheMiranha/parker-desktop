@@ -83,7 +83,8 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "assets/icon.ico"
     },
     "linux": {
       "target": [
@@ -238,6 +239,7 @@
     "react-leaflet": "^4.0.0",
     "react-map-gl": "^7.0.15",
     "react-router-dom": "^6.3.0",
+    "url": "^0.11.0",
     "weather-api-data": "^1.0.8"
   },
   "devEngines": {

@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, Notification } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Notification, Tray, Menu } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -18,7 +18,8 @@ import fs from 'fs';
 import axios from 'axios';
 import GithubDownloader from 'download-git-repo';
 
-const { session } = require('electron')
+import pie from "puppeteer-in-electron";
+import puppeteer from "puppeteer-core";
 
 export default class AppUpdater {
   constructor() {
@@ -31,19 +32,16 @@ export default class AppUpdater {
 const UPDATE_NOTIFICATION_TITLE = 'Parker';
 
 autoUpdater.on('checking-for-update', () => {
-  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Verificando atualizações' }).show()
 })
 autoUpdater.on('update-available', (ev, info) => {
   new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Atualização disponível.' }).show()
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Nenhuma atualização disponível.' }).show()
 })
 autoUpdater.on('error', (ev, err) => {
   new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Erro ao tentar atualizar.' }).show()
 })
 autoUpdater.on('download-progress', (ev, progressObj) => {
-  new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Baixando atualização...' }).show()
 })
 autoUpdater.on('update-downloaded', (ev, info) => {
   new Notification({ title: UPDATE_NOTIFICATION_TITLE, body: 'Atualização baixada; Instalando em 5 segundos...' }).show()
@@ -59,13 +57,13 @@ const RESOURCES_PATH = app.isPackaged
 : path.join(__dirname, '../../assets');
 
 const getAssetPath = (x: string) => {
-  return path.join('./', x);
+  return path.join(RESOURCES_PATH, x);
 }
 
 ipcMain.on('titlebar', async(event, arg: string) => {
   switch(arg) {
     case 'close':
-    app.quit();
+    mainWindow?.hide();
     case 'minimize':
     mainWindow?.minimize();
     break;
@@ -81,19 +79,19 @@ async function getConfig() {
 }
 
 async function getPluginConfig(plugin: string) {
-  var config = fs.readFileSync(getAssetPath('/plugins/' + plugin + '/config/config.json'), 'utf8');
+  var config = fs.readFileSync(path.join('./','/plugins/' + plugin + '/config/config.json'), 'utf8');
   return JSON.parse(config);
 }
 
 async function setPluginConfig(plugin: string, config: any) {
-  fs.writeFileSync(getAssetPath('/plugins/' + plugin + '/config/config.json'), JSON.stringify(config));
+  fs.writeFileSync(path.join('./','/plugins/' + plugin + '/config/config.json'), JSON.stringify(config));
 }
 
 async function getPlugins() {
-  var pluginsFolders = fs.readdirSync(getAssetPath('/plugins'));
+  var pluginsFolders = fs.readdirSync(path.join('./','/plugins'));
   var plugins = [];
   pluginsFolders.forEach(folder => {
-    var packageJson = fs.readFileSync(getAssetPath('/plugins/' + folder + '/package.json'), 'utf8');
+    var packageJson = fs.readFileSync(path.join('./','/plugins/' + folder + '/package.json'), 'utf8');
     packageJson = JSON.parse(packageJson);
     var plugin = {};
     plugin['package'] = packageJson;
@@ -104,7 +102,7 @@ async function getPlugins() {
 }
 
 async function downloadPlugin(repo, callBack) {
-  GithubDownloader('github:' + repo, getAssetPath('/plugins/' + repo.split('/')[1]), (err) => {
+  GithubDownloader('github:' + repo, path.join('./','/plugins/' + repo.split('/')[1]), (err) => {
     callBack();
   })
 }
@@ -114,7 +112,7 @@ async function saveConfig(config: any) {
 }
 
 ipcMain.on('getAssetsPath', async(event, arg) => {
-  event.reply('getAssetsPath', getAssetPath(arg));
+  event.reply('getAssetsPath', path.join('./',arg));
 })
 
 ipcMain.on('downloadPlugin', async(event, arg) => {
@@ -126,7 +124,7 @@ ipcMain.on('downloadPlugin', async(event, arg) => {
 
 ipcMain.on('removePlugin', async(event, arg) => {
   var {folder} = arg;
-  fs.rmSync(getAssetPath('/plugins/' + folder), { recursive: true, force: true });
+  fs.rmSync(path.join('./','/plugins/' + folder), { recursive: true, force: true });
   event.reply('removePlugin', {})
 })
 
@@ -217,6 +215,8 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+var checked = false;
+
 const createWindow = async () => {
   if (isDebug) {
     await installExtensions();
@@ -224,13 +224,15 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
+    width: 1500,
     frame: false,
-    height: 728,
+    height: 850,
     minHeight: 728,
     minWidth: 1024,
     icon: getAssetPath('icon.png'),
     webPreferences: {
+      webviewTag: true,
+      nodeIntegration: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -239,7 +241,7 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.on('ready-to-show', async() => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
@@ -248,7 +250,19 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+    var init = async() => {
+      const browser = await pie.connect(app, puppeteer);
+
+      const window = new BrowserWindow();
+      const url = "https://google.com/";
+      await window.loadURL(url);
+
+      const page = await pie.getPage(browser, window);
+      console.log(page.url());
+      window.destroy();
+    }
     
+    init();
     autoUpdater.checkForUpdatesAndNotify();
   });
 
@@ -270,13 +284,20 @@ const createWindow = async () => {
   if (process.env.NODE_ENV === 'development') {
   // Skip autoupdate check
   }else {
-  new AppUpdater();}
+  if (checked == false)
+{
+  new AppUpdater();
+  checked = true;
+} else {
+}
+}
 };
 
 /**
  * Add event listeners...
  */
 
+ app.setAppUserModelId('Parker');
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -285,10 +306,19 @@ app.on('window-all-closed', () => {
   }
 });
 
+let tray = null;
 app
   .whenReady()
   .then(() => {
     createWindow();
+    tray = new Tray(getAssetPath('icon.png'));
+    const contextMenu = Menu.buildFromTemplate([
+      {label: 'Abrir', click: () => mainWindow?.show()},
+      {label: 'Encerrar', click: () => app.quit()}
+    ]);
+    tray.setToolTip('Parker');
+    tray.setContextMenu(contextMenu);
+
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
